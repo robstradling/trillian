@@ -15,7 +15,6 @@
 package postgresql
 
 import (
-	"database/sql"
 	"flag"
 	"sync"
 
@@ -24,7 +23,8 @@ import (
 	"k8s.io/klog/v2"
 
 	// Load PostgreSQL driver
-	_ "github.com/go-sql-driver/postgresql"
+	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
