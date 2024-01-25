@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mysql
+package postgresql
 
 import (
 	"database/sql"
@@ -23,67 +23,67 @@ import (
 	"github.com/google/trillian/storage"
 	"k8s.io/klog/v2"
 
-	// Load MySQL driver
-	_ "github.com/go-sql-driver/mysql"
+	// Load PostgreSQL driver
+	_ "github.com/go-sql-driver/postgresql"
 )
 
 var (
-	mySQLURI = flag.String("mysql_uri", "test:zaphod@tcp(127.0.0.1:3306)/test", "Connection URI for MySQL database")
-	maxConns = flag.Int("mysql_max_conns", 0, "Maximum connections to the database")
-	maxIdle  = flag.Int("mysql_max_idle_conns", -1, "Maximum idle database connections in the connection pool")
+	postgreSQLURI = flag.String("postgresql_uri", "test:zaphod@tcp(127.0.0.1:3306)/test", "Connection URI for PostgreSQL database")
+	maxConns = flag.Int("postgresql_max_conns", 0, "Maximum connections to the database")
+	maxIdle  = flag.Int("postgresql_max_idle_conns", -1, "Maximum idle database connections in the connection pool")
 
-	mysqlMu              sync.Mutex
-	mysqlErr             error
-	mysqlDB              *sql.DB
-	mysqlStorageInstance *mysqlProvider
+	postgresqlMu              sync.Mutex
+	postgresqlErr             error
+	postgresqlDB              *sql.DB
+	postgresqlStorageInstance *postgresqlProvider
 )
 
-// GetDatabase returns an instance of MySQL database, or creates one.
+// GetDatabase returns an instance of PostgreSQL database, or creates one.
 //
-// TODO(pavelkalinnikov): Make the dependency of MySQL quota provider from
-// MySQL storage provider explicit.
+// TODO(pavelkalinnikov): Make the dependency of PostgreSQL quota provider from
+// PostgreSQL storage provider explicit.
 func GetDatabase() (*sql.DB, error) {
-	mysqlMu.Lock()
-	defer mysqlMu.Unlock()
-	return getMySQLDatabaseLocked()
+	postgresqlMu.Lock()
+	defer postgresqlMu.Unlock()
+	return getPostgreSQLDatabaseLocked()
 }
 
 func init() {
-	if err := storage.RegisterProvider("mysql", newMySQLStorageProvider); err != nil {
-		klog.Fatalf("Failed to register storage provider mysql: %v", err)
+	if err := storage.RegisterProvider("postgresql", newPostgreSQLStorageProvider); err != nil {
+		klog.Fatalf("Failed to register storage provider postgresql: %v", err)
 	}
 }
 
-type mysqlProvider struct {
+type postgresqlProvider struct {
 	db *sql.DB
 	mf monitoring.MetricFactory
 }
 
-func newMySQLStorageProvider(mf monitoring.MetricFactory) (storage.Provider, error) {
-	mysqlMu.Lock()
-	defer mysqlMu.Unlock()
-	if mysqlStorageInstance == nil {
-		db, err := getMySQLDatabaseLocked()
+func newPostgreSQLStorageProvider(mf monitoring.MetricFactory) (storage.Provider, error) {
+	postgresqlMu.Lock()
+	defer postgresqlMu.Unlock()
+	if postgresqlStorageInstance == nil {
+		db, err := getPostgreSQLDatabaseLocked()
 		if err != nil {
 			return nil, err
 		}
-		mysqlStorageInstance = &mysqlProvider{
+		postgresqlStorageInstance = &postgresqlProvider{
 			db: db,
 			mf: mf,
 		}
 	}
-	return mysqlStorageInstance, nil
+	return postgresqlStorageInstance, nil
 }
 
-// getMySQLDatabaseLocked returns an instance of MySQL database, or creates
-// one. Requires mysqlMu to be locked.
-func getMySQLDatabaseLocked() (*sql.DB, error) {
-	if mysqlDB != nil || mysqlErr != nil {
-		return mysqlDB, mysqlErr
+// getPostgreSQLDatabaseLocked returns an instance of PostgreSQL database, or creates
+// one. Requires postgresqlMu to be locked.
+func getPostgreSQLDatabaseLocked() (*sql.DB, error) {
+	if postgresqlDB != nil || postgresqlErr != nil {
+		return postgresqlDB, postgresqlErr
 	}
-	db, err := OpenDB(*mySQLURI)
+	db, err := OpenDB(*postgreSQLURI)
 	if err != nil {
-		mysqlErr = err
+		postgresqlErr = err
 		return nil, err
 	}
 	if *maxConns > 0 {
@@ -92,18 +92,18 @@ func getMySQLDatabaseLocked() (*sql.DB, error) {
 	if *maxIdle >= 0 {
 		db.SetMaxIdleConns(*maxIdle)
 	}
-	mysqlDB, mysqlErr = db, nil
+	postgresqlDB, postgresqlErr = db, nil
 	return db, nil
 }
 
-func (s *mysqlProvider) LogStorage() storage.LogStorage {
+func (s *postgresqlProvider) LogStorage() storage.LogStorage {
 	return NewLogStorage(s.db, s.mf)
 }
 
-func (s *mysqlProvider) AdminStorage() storage.AdminStorage {
+func (s *postgresqlProvider) AdminStorage() storage.AdminStorage {
 	return NewAdminStorage(s.db)
 }
 
-func (s *mysqlProvider) Close() error {
+func (s *postgresqlProvider) Close() error {
 	return s.db.Close()
 }
