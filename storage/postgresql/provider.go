@@ -105,5 +105,6 @@ func (s *postgresqlProvider) AdminStorage() storage.AdminStorage {
 }
 
 func (s *postgresqlProvider) Close() error {
-	return s.db.Close()
+	s.db.Close()
+	return nil
 }
