@@ -20,17 +20,12 @@ import (
 
 	"github.com/google/trillian/monitoring"
 	"github.com/google/trillian/storage"
-	"k8s.io/klog/v2"
-
-	// Load PostgreSQL driver
 	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/jackc/pgx/v5/pgxpool"
+	"k8s.io/klog/v2"
 )
 
 var (
-	postgreSQLURI = flag.String("postgresql_uri", "test:zaphod@tcp(127.0.0.1:3306)/test", "Connection URI for PostgreSQL database")
-	maxConns = flag.Int("postgresql_max_conns", 0, "Maximum connections to the database")
-	maxIdle  = flag.Int("postgresql_max_idle_conns", -1, "Maximum idle database connections in the connection pool")
+	postgreSQLURI = flag.String("postgresql_uri", "postgresql:///ctlog?host=localhost&user=ctlog", "Connection URI for PostgreSQL database")
 
 	postgresqlMu              sync.Mutex
 	postgresqlErr             error
@@ -85,12 +80,6 @@ func getPostgreSQLDatabaseLocked() (*pgxpool.Pool, error) {
 	if err != nil {
 		postgresqlErr = err
 		return nil, err
-	}
-	if *maxConns > 0 {
-		db.SetMaxOpenConns(*maxConns)
-	}
-	if *maxIdle >= 0 {
-		db.SetMaxIdleConns(*maxIdle)
 	}
 	postgresqlDB, postgresqlErr = db, nil
 	return db, nil
