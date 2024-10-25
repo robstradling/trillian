@@ -59,7 +59,7 @@ jobs:
       run: go mod download && go build ./...
     
     - name: Run PostgreSQL
-      run: docker run --rm -d --name=pgsql -p 5432:5432 -v "${PWD}/postgresql-data:/postgresql/postgresql-data" postgres:latest --single
+      run: docker run --rm -d --name=pgsql -p 5432:5432 -e POSTGRES_HOST_AUTH_METHOD=trust -v "${PWD}/postgresql-data:/postgresql/postgresql-data" postgres:latest
 
     - name: Wait for PostgreSQL
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
@@ -67,7 +67,7 @@ jobs:
         timeout_seconds: 15
         max_attempts: 3
         retry_on: error
-        command: docker exec pgsql ./psql -c "SELECT 1"
+        command: docker exec pgsql psql -U postgres -c "SELECT 1"
 
     - name: Get PostgreSQL logs
       run: docker logs pgsql
