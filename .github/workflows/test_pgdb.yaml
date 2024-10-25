@@ -79,6 +79,6 @@ jobs:
     - name: Run tests
       run: ./integration/integration_test.sh
       env:
-        TEST_POSTGRESQL_URI: postgresql:///template1?host=localhost&user=postgres&password=postgres
+        TEST_POSTGRESQL_URI: postgresql:///defaultdb?host=localhost&user=postgres&password=postgres
         POSTGRESQL_IN_CONTAINER: true
         POSTGRESQL_CONTAINER_NAME: pgsql
