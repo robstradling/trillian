@@ -63,7 +63,7 @@ jobs:
 
     - uses: GuillaumeFalourd/wait-sleep-action@v1
       with:
-        time: '15'
+        time: '5'
 
     - name: Wait for PostgreSQL
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
@@ -74,7 +74,7 @@ jobs:
         command: docker exec pgsql psql -U postgres -c "SELECT 1"
 
     - name: Get PostgreSQL logs
-      run: docker logs pgsql
+      run: docker logs pgsql 2>&1
 
     - name: Run tests
       run: ./integration/integration_test.sh

@@ -91,18 +91,18 @@ main() {
   then
       echo "Resetting DB..."
       set -eux
-      $CMD "${FLAGS[@]}" -e "DROP DATABASE IF EXISTS ${POSTGRESQL_DATABASE};" || \
+      $CMD "${FLAGS[@]}" -c "DROP DATABASE IF EXISTS ${POSTGRESQL_DATABASE};" || \
         die "Error: Failed to drop database '${POSTGRESQL_DATABASE}'."
-      $CMD "${FLAGS[@]}" -e "CREATE DATABASE ${POSTGRESQL_DATABASE};" || \
+      $CMD "${FLAGS[@]}" -c "CREATE DATABASE ${POSTGRESQL_DATABASE};" || \
         die "Error: Failed to create database '${POSTGRESQL_DATABASE}'."
       if [[ ${POSTGRESQL_INSECURE} = 'true' ]]; then
-        $CMD "${FLAGS[@]}" -e "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER};" || \
+        $CMD "${FLAGS[@]}" -c "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER};" || \
           die "Error: Failed to create user '${POSTGRESQL_USER}'."
       else
-        $CMD "${FLAGS[@]}" -e "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER} WITH PASSWORD '${POSTGRESQL_PASSWORD}';" || \
+        $CMD "${FLAGS[@]}" -c "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER} WITH PASSWORD '${POSTGRESQL_PASSWORD}';" || \
           die "Error: Failed to create user '${POSTGRESQL_USER}'."
       fi
-      $CMD "${FLAGS[@]}" -e "GRANT ALL PRIVILEGES ON DATABASE ${POSTGRESQL_DATABASE} TO ${POSTGRESQL_USER} WITH GRANT OPTION" || \
+      $CMD "${FLAGS[@]}" -c "GRANT ALL PRIVILEGES ON DATABASE ${POSTGRESQL_DATABASE} TO ${POSTGRESQL_USER} WITH GRANT OPTION" || \
         die "Error: Failed to grant '${POSTGRESQL_USER}' user all privileges on '${POSTGRESQL_DATABASE}'."
       $CMD "${FLAGS[@]}" -d ${POSTGRESQL_DATABASE} < ${TRILLIAN_PATH}/storage/postgresql/schema/storage.sql || \
         die "Error: Failed to create tables in '${POSTGRESQL_DATABASE}' database."
