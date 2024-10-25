@@ -97,10 +97,10 @@ main() {
       $CMD "${FLAGS[@]}" -c "CREATE DATABASE ${POSTGRESQL_DATABASE};" || \
         die "Error: Failed to create database '${POSTGRESQL_DATABASE}'."
       if [[ ${POSTGRESQL_INSECURE} = 'true' ]]; then
-        $CMD "${FLAGS[@]}" -c "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER};" || \
+        $CMD "${FLAGS[@]}" -c "CREATE USER ${POSTGRESQL_USER};" || \
           die "Error: Failed to create user '${POSTGRESQL_USER}'."
       else
-        $CMD "${FLAGS[@]}" -c "CREATE USER IF NOT EXISTS ${POSTGRESQL_USER} WITH PASSWORD '${POSTGRESQL_PASSWORD}';" || \
+        $CMD "${FLAGS[@]}" -c "CREATE USER ${POSTGRESQL_USER} WITH PASSWORD '${POSTGRESQL_PASSWORD}';" || \
           die "Error: Failed to create user '${POSTGRESQL_USER}'."
       fi
       $CMD "${FLAGS[@]}" -c "GRANT ALL PRIVILEGES ON DATABASE ${POSTGRESQL_DATABASE} TO ${POSTGRESQL_USER} WITH GRANT OPTION" || \
