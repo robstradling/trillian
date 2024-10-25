@@ -59,7 +59,7 @@ jobs:
       run: go mod download && go build ./...
     
     - name: Run PostgreSQL
-      run: docker run --rm --name=pgsql -p 5432:5432 -e POSTGRES_HOST_AUTH_METHOD=trust postgres:latest
+      run: docker run -d --name=pgsql -p 5432:5432 -e POSTGRES_HOST_AUTH_METHOD=trust postgres:latest
 
     - name: Wait for PostgreSQL
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
