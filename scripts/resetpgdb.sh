@@ -33,7 +33,7 @@ die() {
 
 collect_vars() {
   # set unset environment variables to defaults
-  [ -z ${POSTGRESQL_ROOT_USER+x} ] && POSTGRESQL_ROOT_USER="root"
+  [ -z ${POSTGRESQL_ROOT_USER+x} ] && POSTGRESQL_ROOT_USER="postgres"
   [ -z ${POSTGRESQL_HOST+x} ] && POSTGRESQL_HOST="localhost"
   [ -z ${POSTGRESQL_PORT+x} ] && POSTGRESQL_PORT="5432"
   [ -z ${POSTGRESQL_DATABASE+x} ] && POSTGRESQL_DATABASE="defaultdb"
@@ -57,12 +57,12 @@ collect_vars() {
     shift 1
   done
 
-  FLAGS+=(-u "${POSTGRESQL_ROOT_USER}")
+  FLAGS+=(-U "${POSTGRESQL_ROOT_USER}")
   FLAGS+=(--host "${POSTGRESQL_HOST}")
   FLAGS+=(--port "${POSTGRESQL_PORT}")
 
   # Useful for debugging
-  FLAGS+=(--echo-sql)
+  FLAGS+=(--echo-all)
 
   # Optionally print flags (before appending password)
   [[ ${VERBOSE} = 'true' ]] && echo "- Using PostgreSQL Flags: ${FLAGS[@]}"
