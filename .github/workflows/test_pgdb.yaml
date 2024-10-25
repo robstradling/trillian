@@ -50,10 +50,10 @@ jobs:
     - name: Wait for PostgreSQL
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
       with:
-        timeout_seconds: 10
+        timeout_seconds: 15
         max_attempts: 3
         retry_on: error
-        command: sleep 5 && docker exec pgsql psql -U postgres -c "SELECT 1"
+        command: docker exec pgsql psql -U postgres -c "SELECT 1"
 
     - name: Get PostgreSQL logs
       run: docker logs pgsql 2>&1
