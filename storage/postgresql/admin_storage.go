@@ -42,7 +42,7 @@ const (
 
 	updateTreeSQL = "UPDATE Trees " +
 		"SET TreeState=$1,TreeType=$2,DisplayName=$3,Description=$4,UpdateTimeMillis=$5,MaxRootDurationMillis=$6 " +
-		"WHERE TreeId=$8"
+		"WHERE TreeId=$7"
 )
 
 // NewAdminStorage returns a PostgreSQL storage.AdminStorage implementation backed by DB.
