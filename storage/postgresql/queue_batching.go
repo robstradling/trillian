@@ -135,6 +135,7 @@ func (t *logTreeTX) UpdateSequencedLeaves(ctx context.Context, leaves []*trillia
 // removeSequencedLeaves removes the passed in leaves slice (which may be
 // modified as part of the operation).
 func (t *logTreeTX) removeSequencedLeaves(ctx context.Context, queueIDs []dequeuedLeaf) error {
+	start := time.Now()
 	// Don't need to re-sort because the query ordered by leaf hash. If that changes because
 	// the query is expensive then the sort will need to be done here. See comment in
 	// QueueLeaves.
@@ -143,5 +144,12 @@ func (t *logTreeTX) removeSequencedLeaves(ctx context.Context, queueIDs []dequeu
 		// Error is handled by checkResultOkAndRowCountIs() below
 		klog.Warningf("Failed to delete sequenced work: %s", err)
 	}
-	return checkResultOkAndRowCountIs(result, err, int64(len(queueIDs)))
+
+	err = checkResultOkAndRowCountIs(result, err, int64(len(queueIDs)))
+	if err != nil {
+		return err
+	}
+
+	observe(dequeueRemoveLatency, time.Since(start), labelForTX(t))
+	return nil
 }
