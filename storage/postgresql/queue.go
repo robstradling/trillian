@@ -1,5 +1,5 @@
-//go:build !batched_queue
-// +build !batched_queue
+//go:build batched_queue
+// +build batched_queue
 
 // Copyright 2024 Trillian Authors. All Rights Reserved.
 //
