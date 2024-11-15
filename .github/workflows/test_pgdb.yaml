@@ -63,7 +63,7 @@ jobs:
       env:
         TEST_POSTGRESQL_URI: postgresql:///defaultdb?host=localhost&user=postgres&password=postgres
         POSTGRESQL_IN_CONTAINER: true
-        POSTGRESQL_CONTAINER_NAME: pgsql
+        POSTGRESQL_CONTAINER_NAME: postgres
 
     - name: Run unit tests
       run: go test -v ./storage/postgresql/... ./quota/postgresqlqm/...
