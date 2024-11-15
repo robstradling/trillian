@@ -39,7 +39,7 @@ jobs:
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
         options: >-
-          --name postgres
+          --name pgsql
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -64,7 +64,7 @@ jobs:
       env:
         TEST_POSTGRESQL_URI: postgresql:///defaultdb?host=localhost&user=postgres&password=postgres
         POSTGRESQL_IN_CONTAINER: true
-        POSTGRESQL_CONTAINER_NAME: postgres
+        POSTGRESQL_CONTAINER_NAME: pgsql
 
     - name: Run unit tests
       run: go test -v ./storage/postgresql/... ./quota/postgresqlqm/...
