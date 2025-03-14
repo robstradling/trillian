@@ -164,8 +164,8 @@ CREATE OR REPLACE FUNCTION queue_leaves(
 ) RETURNS SETOF bytea
 LANGUAGE plpgsql AS $$
 BEGIN
-  LOCK TABLE LeafData IN SHARE ROW EXCLUSIVE MODE;
   LOCK TABLE Unsequenced IN SHARE ROW EXCLUSIVE MODE;
+  LOCK TABLE LeafData IN SHARE ROW EXCLUSIVE MODE;
   UPDATE TempQueueLeaves t
     SET IsDuplicate = TRUE
     FROM LeafData l
@@ -190,8 +190,8 @@ CREATE OR REPLACE FUNCTION add_sequenced_leaves(
 ) RETURNS TABLE(leaf_identity_hash bytea, is_duplicate_leaf_data boolean, is_duplicate_sequenced_leaf_data boolean)
 LANGUAGE plpgsql AS $$
 BEGIN
-  LOCK TABLE LeafData IN SHARE ROW EXCLUSIVE MODE;
   LOCK TABLE SequencedLeafData IN SHARE ROW EXCLUSIVE MODE;
+  LOCK TABLE LeafData IN SHARE ROW EXCLUSIVE MODE;
   UPDATE TempAddSequencedLeaves t
     SET IsDuplicateLeafData = TRUE
     FROM LeafData l
