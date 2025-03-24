@@ -4,6 +4,8 @@ go 1.23.0
 
 toolchain go1.23.4
 
+replace github.com/jackc/pgx/v5 v5.7.3 => github.com/robstradling/pgx/v5 v5.0.1
+
 require (
 	bitbucket.org/creachadair/shell v0.0.8
 	cloud.google.com/go/spanner v1.77.0
